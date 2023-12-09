@@ -56,46 +56,43 @@
 
  <body>
 
-	<h1>FTC CenterStage 2023 Countdown</h1>
-<body>
+  <h1>Team Name Lookup</h1>
+  
+  <label for="teamNumber">Enter Team Number:</label>
+  <input type="number" id="teamNumber" placeholder="Enter team number">
+  <button onclick="lookupTeamName()">Lookup</button>
 
-<div id="timer">03:00</div>
-<button onclick="startTimer()">Start</button>
-<button onclick="stopTimer()">Stop</button>
-<button onclick="resetTimer()">Reset</button>
+  <p id="teamName"></p>
 
-<script>
-  let timer;
-  let timeRemaining = 180; // 3 minutes in seconds
+  <script>
+    function lookupTeamName() {
+      const teamNumber = document.getElementById('teamNumber').value;
 
-  function updateTimerDisplay() {
-    const minutes = Math.floor(timeRemaining / 60);
-    const seconds = timeRemaining % 60;
-    document.getElementById('timer').innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  }
-
-  function startTimer() {
-    timer = setInterval(function () {
-      if (timeRemaining > 0) {
-        timeRemaining--;
-        updateTimerDisplay();
-      } else {
-        clearInterval(timer);
-        alert("Countdown complete!");
-      }
-    }, 1000);
-  }
-
-  function stopTimer() {
-    clearInterval(timer);
-  }
-
-  function resetTimer() {
-    clearInterval(timer);
-    timeRemaining = 180;
-    updateTimerDisplay();
-  }
-</script>
+      // Make a GraphQL query to retrieve the team name based on the team number
+      fetch('https://api.ftcscout.org/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `
+            {
+              teamByNumber(number: ${teamNumber}) {
+                name
+              }
+            }
+          `,
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        const teamName = data.data.teamByNumber ? data.data.teamByNumber.name : 'Team not found';
+        document.getElementById('teamName').innerText = `Team Name: ${teamName}`;
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  </script>
 
  </body>
 
