@@ -57,50 +57,44 @@
  <body>
 
 	<h1>FTC CenterStage 2023 Countdown</h1>
+<body>
 
-<div id="countdown">03:00</div>
-
-<div id="controls">
-    <button onclick="startCountdown()">Start</button>
-    <button onclick="stopCountdown()">Stop</button>
-    <button onclick="resetCountdown()">Reset</button>
-</div>
+<div id="timer">03:00</div>
+<button onclick="startTimer()">Start</button>
+<button onclick="stopTimer()">Stop</button>
+<button onclick="resetTimer()">Reset</button>
 
 <script>
-    let countdownTimer;
-    let countdownSeconds = 180; // 3 minutes
+  let timer;
+  let timeRemaining = 180; // 3 minutes in seconds
 
-    function startCountdown() {
-        countdownTimer = setInterval(updateCountdown, 1000);
-    }
+  function updateTimerDisplay() {
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
+    document.getElementById('timer').innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
 
-    function stopCountdown() {
-        clearInterval(countdownTimer);
-    }
+  function startTimer() {
+    timer = setInterval(function () {
+      if (timeRemaining > 0) {
+        timeRemaining--;
+        updateTimerDisplay();
+      } else {
+        clearInterval(timer);
+        alert("Countdown complete!");
+      }
+    }, 1000);
+  }
 
-    function resetCountdown() {
-        clearInterval(countdownTimer);
-        countdownSeconds = 180;
-        updateCountdown();
-    }
+  function stopTimer() {
+    clearInterval(timer);
+  }
 
-    function updateCountdown() {
-        const minutes = Math.floor(countdownSeconds / 60);
-        const seconds = countdownSeconds % 60;
-        const formattedTime = `${pad(minutes)}:${pad(seconds)}`;
-        document.getElementById('countdown').innerText = formattedTime;
-
-        if (countdownSeconds === 0) {
-            clearInterval(countdownTimer);
-            alert("Countdown complete!");
-        } else {
-            countdownSeconds--;
-        }
-    }
-
-    function pad(value) {
-        return value < 10 ? `0${value}` : value;
-    }
+  function resetTimer() {
+    clearInterval(timer);
+    timeRemaining = 180;
+    updateTimerDisplay();
+  }
 </script>
 
  </body>
